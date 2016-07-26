@@ -1,5 +1,6 @@
 package jp.co.crowdworks.realm_java_helpers;
 
+import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -9,10 +10,11 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 
 public abstract class RealmObjectObserver<T extends RealmObject> {
-    protected abstract RealmQuery<T> query();
+    protected abstract RealmQuery<T> query(Realm realm);
     protected abstract void onChange(T model);
 
     private Subscription mSub;
+    private Realm mRealm;
 
     protected T extractObjectFromResults(RealmResults<T> results) {
         return results.last();
@@ -21,7 +23,8 @@ public abstract class RealmObjectObserver<T extends RealmObject> {
     public void sub() {
         unsub();
 
-        Observable<RealmResults<T>> observable = query().findAll().asObservable();
+        mRealm = RealmHelper.get();
+        Observable<RealmResults<T>> observable = query(mRealm).findAll().asObservable();
         mSub = observable
                 .filter(new Func1<RealmResults<T>, Boolean>() {
                     @Override
@@ -46,6 +49,9 @@ public abstract class RealmObjectObserver<T extends RealmObject> {
     public void unsub() {
         if (mSub != null && !mSub.isUnsubscribed()) {
             mSub.unsubscribe();
+        }
+        if (mRealm != null && !mRealm.isClosed()) {
+            mRealm.close();
         }
     }
 }

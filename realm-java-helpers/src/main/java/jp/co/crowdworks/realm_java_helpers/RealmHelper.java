@@ -13,7 +13,7 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class RealmHelper {
-    private static Realm get() {
+    static Realm get() {
         return Realm.getDefaultInstance();
     }
 

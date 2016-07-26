@@ -2,6 +2,7 @@ package jp.co.crowdworks.realm_java_helpers;
 
 import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
 import rx.Observable;
@@ -10,15 +11,17 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 
 public abstract class RealmListObserver<T extends RealmObject> {
-    protected abstract RealmResults<T> queryItems();
+    protected abstract RealmResults<T> queryItems(Realm realm);
     protected abstract void onCollectionChanged(List<T> models);
 
     private Subscription mSub;
+    private Realm mRealm;
 
     public void sub() {
         unsub();
 
-        Observable<RealmResults<T>> observable = queryItems().asObservable();
+        mRealm = RealmHelper.get();
+        Observable<RealmResults<T>> observable = queryItems(mRealm).asObservable();
         mSub = observable
                 .map(new Func1<RealmResults<T>, List<T>>() {
                     @Override
@@ -43,6 +46,9 @@ public abstract class RealmListObserver<T extends RealmObject> {
     public void unsub() {
         if (mSub != null && !mSub.isUnsubscribed()) {
             mSub.unsubscribe();
+        }
+        if (mRealm != null && !mRealm.isClosed()) {
+            mRealm.close();
         }
     }
 }
