@@ -1,0 +1,51 @@
+apply plugin: 'com.android.library'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.realm:realm-gradle-plugin:1.1.0"
+    }
+}
+
+def repo = new File(rootDir, "repo")
+
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository url: "file://${repo.absolutePath}"
+            pom.version = '0.0.2'
+            pom.groupId = 'jp.co.crowdworks'
+            pom.artifactId = 'realm-java-helpers-bolts'
+        }
+    }
+}
+
+apply plugin: 'realm-android'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.0"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 1
+        versionName "0.0.2"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            //shrinkResources true
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.parse.bolts:bolts-tasks:1.4.0'
+    compile 'com.google.code.gson:gson:2.7'
+}
