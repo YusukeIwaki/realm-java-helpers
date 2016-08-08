@@ -12,6 +12,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(JUnit4.class)
 public class RealmHelperTest {
@@ -61,7 +62,20 @@ public class RealmHelperTest {
                 assertEquals(2, user.getId());
             }
         }.start();
+
         Thread.sleep(1000);
+    }
+
+    public void testExecuteTransactionForReadNull() {
+        final TestUser user = RealmHelper.executeTransactionForRead(new RealmHelper.Transaction<TestUser>() {
+            @Override
+            public TestUser execute(Realm realm) {
+                TestUser u = realm.where(TestUser.class).equalTo("id", 4).findFirst();
+                assertNull(u);
+                return u;
+            }
+        });
+        assertNull(user);
     }
 
 }

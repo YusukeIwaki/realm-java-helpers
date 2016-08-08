@@ -5,6 +5,7 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
@@ -32,6 +33,8 @@ public class RealmHelper {
             .create();
 
     public static <E extends RealmObject> List<E> copyFromRealm(Iterable<E> objects) {
+        if (objects==null) return Collections.emptyList();
+
         Realm realm = get();
         List<E> l = realm.copyFromRealm(objects);
         if (!realm.isClosed()) realm.close();
@@ -39,6 +42,8 @@ public class RealmHelper {
     }
 
     public static <E extends RealmObject> E copyFromRealm(E object) {
+        if (object==null) return null;
+
         Realm realm = get();
         E e = realm.copyFromRealm(object);
         if (!realm.isClosed()) realm.close();
