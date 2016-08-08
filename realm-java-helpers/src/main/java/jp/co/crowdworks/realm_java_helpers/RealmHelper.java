@@ -45,14 +45,23 @@ public class RealmHelper {
         return e;
     }
 
-    public static void executeTransactionForRead(Realm.Transaction transaction) {
+    public interface Transaction<T> {
+        T execute(Realm realm);
+    }
+
+    public static <T extends RealmObject> T executeTransactionForRead(Transaction<T> transaction) {
         Realm realm = get();
+
+        T object;
+
         try {
-            transaction.execute(realm);
+            object = RealmHelper.copyFromRealm(transaction.execute(realm));
         }
         finally {
             if (!realm.isClosed()) realm.close();
         }
+
+        return object;
     }
 
     public static Observable<Void> rxExecuteTransactionAsync(final Realm.Transaction transaction) {
