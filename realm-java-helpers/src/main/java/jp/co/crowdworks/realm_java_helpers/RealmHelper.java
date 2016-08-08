@@ -1,5 +1,7 @@
 package jp.co.crowdworks.realm_java_helpers;
 
+import android.util.Log;
+
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -14,6 +16,9 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class RealmHelper {
+
+    private static final String TAG = RealmHelper.class.getSimpleName();
+
     static Realm get() {
         return Realm.getDefaultInstance();
     }
@@ -51,7 +56,7 @@ public class RealmHelper {
     }
 
     public interface Transaction<T> {
-        T execute(Realm realm);
+        T execute(Realm realm) throws Throwable;
     }
 
     public static <T extends RealmObject> T executeTransactionForRead(Transaction<T> transaction) {
@@ -61,25 +66,43 @@ public class RealmHelper {
 
         try {
             object = RealmHelper.copyFromRealm(transaction.execute(realm));
-        }
-        finally {
+        } catch (Throwable throwable) {
+            Log.w(TAG, throwable.getMessage(), throwable);
+            object = null;
+        } finally {
             if (!realm.isClosed()) realm.close();
         }
 
         return object;
     }
 
-    public static Observable<Void> rxExecuteTransactionAsync(final Realm.Transaction transaction) {
+    public static Observable<Void> rxExecuteTransactionAsync(final Transaction transaction) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
+            boolean mError = false;
+
             @Override
             public void call(final Subscriber<? super Void> subscriber) {
                 final Realm realm = get();
-                realm.executeTransactionAsync(transaction, new Realm.Transaction.OnSuccess() {
+                realm.executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        try {
+                            mError = false;
+                            transaction.execute(realm);
+                        } catch (Throwable e) {
+                            subscriber.onError(e);
+                            if (!realm.isClosed()) realm.close();
+                            mError = true;
+                        }
+                    }
+                }, new Realm.Transaction.OnSuccess() {
                     @Override
                     public void onSuccess() {
-                        subscriber.onNext(null);
-                        subscriber.onCompleted();
-                        if (realm != null && !realm.isClosed()) realm.close();
+                        if (!mError) {
+                            subscriber.onNext(null);
+                            subscriber.onCompleted();
+                            if (realm != null && !realm.isClosed()) realm.close();
+                        }
                     }
                 }, new Realm.Transaction.OnError() {
                     @Override
