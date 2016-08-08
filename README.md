@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile 'jp.co.crowdworks:realm-java-helpers:0.0.3'
+    compile 'jp.co.crowdworks:realm-java-helpers:0.0.4'
 }
 ```
 
@@ -26,13 +26,14 @@ dependencies {
 //  User u = Realm.getDefaultInstance().where(User.class).equals("id", id).findFirst();
 //  setTitle(u.getName());
 
-RealmHelper.executeTransactionForRead(new Realm.Transaction() {
+RealmHelper.executeTransactionForRead(new RealmHelper.Transaction<User>() {
     @Override
     public void execute(Realm realm) {
-        User u = realm.where(User.class).equals("id", id).findFirst();
-        setTitle(u.getName());
+        return realm.where(User.class).equals("id", id).findFirst();
     }
 }); // realm is automatically closed after Transaction!
+
+setTitle(u.getName());
 ```
 
 ### executeTransactionAsync with Rx

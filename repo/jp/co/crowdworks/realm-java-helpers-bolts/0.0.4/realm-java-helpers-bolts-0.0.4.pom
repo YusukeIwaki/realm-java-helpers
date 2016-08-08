@@ -8,9 +8,9 @@
   <packaging>aar</packaging>
   <dependencies>
     <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.7</version>
+      <groupId>io.realm</groupId>
+      <artifactId>realm-annotations</artifactId>
+      <version>1.1.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -26,9 +26,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>io.realm</groupId>
-      <artifactId>realm-annotations</artifactId>
-      <version>1.1.0</version>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.7</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
