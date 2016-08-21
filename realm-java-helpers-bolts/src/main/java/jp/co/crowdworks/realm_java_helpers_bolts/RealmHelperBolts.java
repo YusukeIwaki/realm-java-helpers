@@ -9,21 +9,37 @@ public class RealmHelperBolts {
         return Realm.getDefaultInstance();
     }
 
-    public static Task<Void> executeTransactionAsync(final Realm.Transaction transaction) {
+    public interface Transaction<T> {
+        T execute(Realm realm) throws Exception;
+    }
+
+    public static Task<Void> executeTransactionAsync(final Transaction transaction) {
         final TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
         final Realm realm = get();
-        realm.executeTransactionAsync(transaction, new Realm.Transaction.OnSuccess() {
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                try {
+                    transaction.execute(realm);
+                } catch (Exception e) {
+                    task.setError(e);
+                    if (!realm.isClosed()) realm.close();
+                }
+            }
+        }, new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
-                task.setResult(null);
-                if (realm != null && !realm.isClosed()) realm.close();
+                if (task.trySetResult(null)) {
+                    if (realm != null && !realm.isClosed()) realm.close();
+                }
             }
         }, new Realm.Transaction.OnError() {
             @Override
             public void onError(Throwable error) {
-                task.setError(new Exception(error));
-                if (!realm.isClosed()) realm.close();
+                if (task.trySetError(new Exception(error))) {
+                    if (!realm.isClosed()) realm.close();
+                }
             }
         });
 
