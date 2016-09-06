@@ -1,5 +1,7 @@
 package jp.co.crowdworks.realm_java_helpers;
 
+import android.util.Log;
+
 import java.util.List;
 
 import io.realm.Realm;
@@ -11,6 +13,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 
 public abstract class RealmListObserver<T extends RealmObject> {
+    private static final String TAG = RealmListObserver.class.getSimpleName();
+
     protected abstract RealmResults<T> queryItems(Realm realm);
     protected abstract void onCollectionChanged(List<T> models);
 
@@ -41,6 +45,18 @@ public abstract class RealmListObserver<T extends RealmObject> {
                         onCollectionChanged(results);
                     }
                 });
+    }
+
+    public void keepalive() {
+        if (mRealm == null || mRealm.isClosed()) {
+            try {
+                unsub();
+            }
+            catch (Exception e) {
+                Log.w(TAG, e.getMessage());
+            }
+            sub();
+        }
     }
 
     public void unsub() {
