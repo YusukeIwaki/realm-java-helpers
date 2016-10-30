@@ -21,7 +21,7 @@ public abstract class RealmObjectObserver<T extends RealmObject> {
     private Realm mRealm;
 
     protected T extractObjectFromResults(RealmResults<T> results) {
-        return results.last();
+        return results.isEmpty() ? null : results.last();
     }
 
     public void sub() {
@@ -30,12 +30,6 @@ public abstract class RealmObjectObserver<T extends RealmObject> {
         mRealm = RealmHelper.get();
         Observable<RealmResults<T>> observable = query(mRealm).findAll().asObservable();
         mSub = observable
-                .filter(new Func1<RealmResults<T>, Boolean>() {
-                    @Override
-                    public Boolean call(RealmResults<T> results) {
-                        return !results.isEmpty();
-                    }
-                })
                 .map(new Func1<RealmResults<T>, T>() {
                     @Override
                     public T call(RealmResults<T> results) {
