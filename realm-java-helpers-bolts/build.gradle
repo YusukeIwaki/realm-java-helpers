@@ -17,7 +17,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository url: "file://${repo.absolutePath}"
-            pom.version = '0.0.5'
+            pom.version = '0.0.6'
             pom.groupId = 'jp.co.crowdworks'
             pom.artifactId = 'realm-java-helpers-bolts'
         }
@@ -27,14 +27,14 @@ uploadArchives {
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
-        versionName "0.0.5"
+        versionName "0.0.6"
     }
     buildTypes {
         release {
