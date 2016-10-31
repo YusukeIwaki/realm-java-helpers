@@ -1,5 +1,6 @@
 package jp.co.crowdworks.realm_java_helpers;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.gson.ExclusionStrategy;
@@ -74,6 +75,36 @@ public class RealmHelper {
         }
 
         return object;
+    }
+
+    public static Observable<Void> rxExecuteTransaction(final Transaction transaction) {
+        if (Looper.myLooper()==null) return rxExecuteTransactionSync(transaction);
+        else return rxExecuteTransactionAsync(transaction);
+    }
+
+    public static Observable<Void> rxExecuteTransactionSync(final Transaction transaction) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            boolean mError = false;
+
+            @Override
+            public void call(final Subscriber<? super Void> subscriber) {
+                final Realm realm = get();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        try {
+                            mError = false;
+                            transaction.execute(realm);
+                            subscriber.onNext(null);
+                            subscriber.onCompleted();
+                        } catch (Throwable e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                });
+                if (!realm.isClosed()) realm.close();
+            }
+        });
     }
 
     public static Observable<Void> rxExecuteTransactionAsync(final Transaction transaction) {
