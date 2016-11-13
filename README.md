@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile 'jp.co.crowdworks:realm-java-helpers:0.0.4'
+    compile 'jp.co.crowdworks:realm-java-helpers:0.0.8'
 }
 ```
 
