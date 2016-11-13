@@ -21,24 +21,36 @@ public abstract class RealmListObserver<T extends RealmObject> {
     private Subscription mSub;
     private Realm mRealm;
 
+    /**
+     *
+     * if more precious result is required, use like this:
+     *
+     * return results
+     * .map(new Func1<RealmResults<T>, List<T>>() {
+     *    @Override
+     *    public List<T> call(RealmResults<T> results) {
+     *    return RealmHelper.copyFromRealm(results);
+     *    }
+     *    })
+     * .distinctUntilChanged(new Func1<List<T>, String>() {
+     *    @Override
+     *    public String call(List<T> list) {
+     *    return RealmHelper.getJSONForRealmObjectList(list);
+     *    }
+     *    })
+     *
+     * Remark that it increse the frequency of GC.
+     */
+    protected Observable<? extends List<T>> filter(Observable<RealmResults<T>> results) {
+        return results;
+    }
+
     public void sub() {
         unsub();
 
         mRealm = RealmHelper.get();
         Observable<RealmResults<T>> observable = queryItems(mRealm).asObservable();
-        mSub = observable
-                .map(new Func1<RealmResults<T>, List<T>>() {
-                    @Override
-                    public List<T> call(RealmResults<T> results) {
-                        return RealmHelper.copyFromRealm(results);
-                    }
-                })
-                .distinctUntilChanged(new Func1<List<T>, String>() {
-                    @Override
-                    public String call(List<T> list) {
-                        return RealmHelper.getJSONForRealmObjectList(list);
-                    }
-                })
+        mSub = filter(observable)
                 .subscribe(new Action1<List<T>>() {
                     @Override
                     public void call(List<T> results) {
