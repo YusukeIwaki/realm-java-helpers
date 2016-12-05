@@ -20,7 +20,8 @@ public class RealmHelperTest {
     @BeforeClass
     public static void initializeRealm() {
         Context context = InstrumentationRegistry.getContext();
-        RealmConfiguration config = new RealmConfiguration.Builder(context)
+        Realm.init(context);
+        RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("test-"+System.currentTimeMillis()+".realm")
                 .build();
 

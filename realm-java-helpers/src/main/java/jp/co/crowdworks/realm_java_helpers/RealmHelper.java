@@ -13,8 +13,8 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
-import rx.Observable;
-import rx.Subscriber;
+import rx.Completable;
+import rx.CompletableSubscriber;
 
 public class RealmHelper {
 
@@ -41,19 +41,25 @@ public class RealmHelper {
     public static <E extends RealmObject> List<E> copyFromRealm(Iterable<E> objects) {
         if (objects==null) return Collections.emptyList();
 
-        Realm realm = get();
-        List<E> l = realm.copyFromRealm(objects);
-        if (!realm.isClosed()) realm.close();
-        return l;
+        try (Realm realm = get()) {
+            return realm.copyFromRealm(objects);
+        }
+        catch (Exception e) {
+            Log.w(TAG, e.getMessage(), e);
+            return Collections.emptyList();
+        }
     }
 
     public static <E extends RealmObject> E copyFromRealm(E object) {
         if (object==null) return null;
 
-        Realm realm = get();
-        E e = realm.copyFromRealm(object);
-        if (!realm.isClosed()) realm.close();
-        return e;
+        try (Realm realm = get()) {
+            return realm.copyFromRealm(object);
+        }
+        catch (Exception e) {
+            Log.w(TAG, e.getMessage(), e);
+            return null;
+        }
     }
 
     public interface Transaction<T> {
@@ -61,85 +67,65 @@ public class RealmHelper {
     }
 
     public static <T extends RealmObject> T executeTransactionForRead(Transaction<T> transaction) {
-        Realm realm = get();
-
-        T object;
-
-        try {
-            object = RealmHelper.copyFromRealm(transaction.execute(realm));
+        try (Realm realm = get()) {
+            return RealmHelper.copyFromRealm(transaction.execute(realm));
         } catch (Throwable throwable) {
             Log.w(TAG, throwable.getMessage(), throwable);
-            object = null;
-        } finally {
-            if (!realm.isClosed()) realm.close();
+            return null;
         }
-
-        return object;
     }
 
-    public static Observable<Void> rxExecuteTransaction(final Transaction transaction) {
+    public static Completable rxExecuteTransaction(final Transaction transaction) {
         if (Looper.myLooper()==null) return rxExecuteTransactionSync(transaction);
         else return rxExecuteTransactionAsync(transaction);
     }
 
-    public static Observable<Void> rxExecuteTransactionSync(final Transaction transaction) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            boolean mError = false;
-
+    private static Completable rxExecuteTransactionSync(final Transaction transaction) {
+        return Completable.create(new Completable.OnSubscribe() {
             @Override
-            public void call(final Subscriber<? super Void> subscriber) {
-                final Realm realm = get();
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        try {
-                            mError = false;
-                            transaction.execute(realm);
-                            subscriber.onNext(null);
-                            subscriber.onCompleted();
-                        } catch (Throwable e) {
-                            subscriber.onError(e);
+            public void call(final CompletableSubscriber completableSubscriber) {
+                try (Realm realm = get()) {
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            try {
+                                transaction.execute(realm);
+                                completableSubscriber.onCompleted();
+                            } catch (Throwable throwable) {
+                                completableSubscriber.onError(throwable);
+                            }
                         }
-                    }
-                });
-                if (!realm.isClosed()) realm.close();
+                    });
+                }
             }
         });
     }
 
-    public static Observable<Void> rxExecuteTransactionAsync(final Transaction transaction) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            boolean mError = false;
-
+    private static Completable rxExecuteTransactionAsync(final Transaction transaction) {
+        return Completable.create(new Completable.OnSubscribe() {
             @Override
-            public void call(final Subscriber<? super Void> subscriber) {
+            public void call(final CompletableSubscriber completableSubscriber) {
                 final Realm realm = get();
                 realm.executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
                         try {
-                            mError = false;
                             transaction.execute(realm);
-                        } catch (Throwable e) {
-                            subscriber.onError(e);
-                            if (!realm.isClosed()) realm.close();
-                            mError = true;
+                        } catch (Throwable throwable) {
+                            throw new RuntimeException(throwable);
                         }
                     }
                 }, new Realm.Transaction.OnSuccess() {
                     @Override
                     public void onSuccess() {
-                        if (!mError) {
-                            subscriber.onNext(null);
-                            subscriber.onCompleted();
-                            if (realm != null && !realm.isClosed()) realm.close();
-                        }
+                        realm.close();
+                        completableSubscriber.onCompleted();
                     }
                 }, new Realm.Transaction.OnError() {
                     @Override
                     public void onError(Throwable error) {
-                        subscriber.onError(error);
-                        if (!realm.isClosed()) realm.close();
+                        realm.close();
+                        completableSubscriber.onError(error);
                     }
                 });
             }

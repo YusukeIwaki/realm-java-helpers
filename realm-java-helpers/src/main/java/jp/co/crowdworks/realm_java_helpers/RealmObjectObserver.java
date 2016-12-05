@@ -21,7 +21,7 @@ public abstract class RealmObjectObserver<T extends RealmObject> {
     private Realm mRealm;
 
     protected T extractObjectFromResults(RealmResults<T> results) {
-        return results.isEmpty() ? null : results.last();
+        return results.last(null);
     }
 
     public void sub() {
@@ -41,27 +41,22 @@ public abstract class RealmObjectObserver<T extends RealmObject> {
                     public void call(T result) {
                         onChange(result);
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.d(TAG, "error", throwable);
+                        unsub();
+                    }
                 });
     }
 
-    public void keepalive() {
-        if (mRealm == null || mRealm.isClosed()) {
-            try {
-                unsub();
-            }
-            catch (Exception e) {
-                Log.w(TAG, e.getMessage());
-            }
-            sub();
-        }
-    }
-
     public void unsub() {
-        if (mSub != null && !mSub.isUnsubscribed()) {
-            mSub.unsubscribe();
-        }
-        if (mRealm != null && !mRealm.isClosed()) {
+        if (mRealm != null) {
+            if (mSub != null && !mSub.isUnsubscribed()) {
+                mSub.unsubscribe();
+            }
             mRealm.close();
+            mRealm = null;
         }
     }
 }

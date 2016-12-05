@@ -21,28 +21,20 @@ public abstract class RealmListObserver<T extends RealmObject> {
     private Subscription mSub;
     private Realm mRealm;
 
-    /**
-     *
-     * if more precious result is required, use like this:
-     *
-     * return results
-     * .map(new Func1<RealmResults<T>, List<T>>() {
-     *    @Override
-     *    public List<T> call(RealmResults<T> results) {
-     *    return RealmHelper.copyFromRealm(results);
-     *    }
-     *    })
-     * .distinctUntilChanged(new Func1<List<T>, String>() {
-     *    @Override
-     *    public String call(List<T> list) {
-     *    return RealmHelper.getJSONForRealmObjectList(list);
-     *    }
-     *    })
-     *
-     * Remark that it increse the frequency of GC.
-     */
     protected Observable<? extends List<T>> filter(Observable<RealmResults<T>> results) {
-        return results;
+        return results
+                .map(new Func1<RealmResults<T>, List<T>>() {
+                    @Override
+                    public List<T> call(RealmResults<T> results) {
+                        return RealmHelper.copyFromRealm(results);
+                    }
+                })
+                .distinctUntilChanged(new Func1<List<T>, String>() {
+                    @Override
+                    public String call(List<T> results) {
+                        return RealmHelper.getJSONForRealmObjectList(results);
+                    }
+                });
     }
 
     public void sub() {
@@ -56,27 +48,22 @@ public abstract class RealmListObserver<T extends RealmObject> {
                     public void call(List<T> results) {
                         onCollectionChanged(results);
                     }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.d(TAG, "error", throwable);
+                        unsub();
+                    }
                 });
     }
 
-    public void keepalive() {
-        if (mRealm == null || mRealm.isClosed()) {
-            try {
-                unsub();
-            }
-            catch (Exception e) {
-                Log.w(TAG, e.getMessage());
-            }
-            sub();
-        }
-    }
-
     public void unsub() {
-        if (mSub != null && !mSub.isUnsubscribed()) {
-            mSub.unsubscribe();
-        }
-        if (mRealm != null && !mRealm.isClosed()) {
+        if (mRealm != null) {
+            if (mSub != null && !mSub.isUnsubscribed()) {
+                mSub.unsubscribe();
+            }
             mRealm.close();
+            mRealm = null;
         }
     }
 }
