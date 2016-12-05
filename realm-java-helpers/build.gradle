@@ -17,7 +17,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository url: "file://${repo.absolutePath}"
-            pom.version = '0.0.8'
+            pom.version = '0.0.9'
             pom.groupId = 'jp.co.crowdworks'
             pom.artifactId = 'realm-java-helpers'
         }
@@ -34,7 +34,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "0.0.8"
+        versionName "0.0.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

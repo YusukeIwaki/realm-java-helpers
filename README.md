@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile 'jp.co.crowdworks:realm-java-helpers:0.0.8'
+    compile 'jp.co.crowdworks:realm-java-helpers:0.0.9'
 }
 ```
 
@@ -39,9 +39,9 @@ setTitle(u.getName());
 ### executeTransactionAsync with Rx
 
 ```
-RealmHelper.rxExecuteTransactionAsync(realm -> {
+RealmHelper.rxExecuteTransaction(realm -> {
     realm.createOrUpdateObjectFromJson(User.class, "{'id': 3, 'name': 'John'}");
-}).subscribe((xx) -> {
+}).subscribe(() -> {
     Log.d(TAG, "done");
 }); // realm is automatically closed after callback!
 ```
