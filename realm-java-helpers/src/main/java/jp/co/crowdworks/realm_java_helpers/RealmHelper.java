@@ -85,17 +85,19 @@ public class RealmHelper {
             @Override
             public void call(final CompletableSubscriber completableSubscriber) {
                 try (Realm realm = get()) {
-                    realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            try {
-                                transaction.execute(realm);
-                                completableSubscriber.onCompleted();
-                            } catch (Throwable throwable) {
-                                completableSubscriber.onError(throwable);
-                            }
+                    realm.beginTransaction();
+                    try {
+                        transaction.execute(realm);
+                        realm.commitTransaction();
+                        completableSubscriber.onCompleted();
+                    } catch (Throwable e) {
+                        if (realm.isInTransaction()) {
+                            realm.cancelTransaction();
                         }
-                    });
+                        completableSubscriber.onError(e);
+                    }
+                } catch (Throwable throwable) {
+                    completableSubscriber.onError(throwable);
                 }
             }
         });
