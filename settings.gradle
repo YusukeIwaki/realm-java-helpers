@@ -1,1 +1,1 @@
-include ':realm-java-helpers'
+include ':realm-java-helpers', ':realm-java-helpers-bolts'
