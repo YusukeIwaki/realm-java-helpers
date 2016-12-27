@@ -12,9 +12,11 @@ repositories {
 }
 
 dependencies {
-    compile 'jp.co.crowdworks:realm-java-helpers:0.0.10'
+    compile 'jp.co.crowdworks:realm-java-helpers-bolts:0.1.0'
 }
 ```
+
+realm-java-helpers (with Rx dependency) is deprecated. Use `realm-java-helpers-bolts` instead.
 
 
 ## Usage
@@ -36,12 +38,12 @@ RealmHelper.executeTransactionForRead(new RealmHelper.Transaction<User>() {
 setTitle(u.getName());
 ```
 
-### executeTransactionAsync with Rx
+### executeTransactionAsync with Bolts
 
 ```
-RealmHelper.rxExecuteTransaction(realm -> {
+RealmHelper.executeTransaction(realm -> {
     realm.createOrUpdateObjectFromJson(User.class, "{'id': 3, 'name': 'John'}");
-}).subscribe(() -> {
+}).onSuccess(task -> {
     Log.d(TAG, "done");
 }); // realm is automatically closed after callback!
 ```
