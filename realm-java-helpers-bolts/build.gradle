@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "io.realm:realm-gradle-plugin:1.1.0"
+        classpath "io.realm:realm-gradle-plugin:2.2.1"
     }
 }
 
@@ -17,7 +17,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository url: "file://${repo.absolutePath}"
-            pom.version = '0.0.8'
+            pom.version = '0.1.0'
             pom.groupId = 'jp.co.crowdworks'
             pom.artifactId = 'realm-java-helpers-bolts'
         }
@@ -28,13 +28,13 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "0.0.8"
+        versionName "0.1.0"
     }
     buildTypes {
         release {
@@ -47,5 +47,4 @@ android {
 
 dependencies {
     compile 'com.parse.bolts:bolts-tasks:1.4.0'
-    compile 'com.google.code.gson:gson:2.7'
 }
