@@ -17,7 +17,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository url: "file://${repo.absolutePath}"
-            pom.version = '0.1.0'
+            pom.version = '0.1.1'
             pom.groupId = 'jp.co.crowdworks'
             pom.artifactId = 'realm-java-helpers-bolts'
         }
@@ -34,7 +34,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "0.1.0"
+        versionName "0.1.1"
     }
     buildTypes {
         release {
