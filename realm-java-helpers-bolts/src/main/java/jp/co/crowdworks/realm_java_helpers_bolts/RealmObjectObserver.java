@@ -22,7 +22,7 @@ public abstract class RealmObjectObserver<T extends RealmObject> extends Abstrac
             @Override
             public void onChange(RealmResults<T> results) {
                 T currentResult = extractObjectFromResults(results);
-                String currentResultString = currentResult != null ? currentResult.toString() : null;
+                String currentResultString = currentResult != null ? currentResult.toString() : "";
                 if (previousResultString != null && previousResultString.equals(currentResultString)) {
                     return;
                 }

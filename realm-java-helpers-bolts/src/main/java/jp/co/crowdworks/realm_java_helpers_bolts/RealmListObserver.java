@@ -16,7 +16,7 @@ public abstract class RealmListObserver<T extends RealmObject> extends AbstractR
         return new RealmChangeListener<RealmResults<T>>() {
             @Override
             public void onChange(RealmResults<T> results) {
-                String currentResultString = results != null ? results.toString() : null;
+                String currentResultString = results != null ? results.toString() : "";
                 if (previousResultsString != null && previousResultsString.equals(currentResultString)) {
                     return;
                 }
