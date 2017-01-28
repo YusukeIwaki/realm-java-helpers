@@ -9,21 +9,7 @@ buildscript {
     }
 }
 
-def repo = new File(rootDir, "repo")
-
 apply plugin: 'maven'
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository url: "file://${repo.absolutePath}"
-            pom.version = '0.1.2'
-            pom.groupId = 'jp.co.crowdworks'
-            pom.artifactId = 'realm-java-helpers-bolts'
-        }
-    }
-}
-
 apply plugin: 'realm-android'
 
 android {
@@ -34,7 +20,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "0.1.2"
+        versionName "1.0.0"
     }
     buildTypes {
         release {
@@ -42,6 +28,9 @@ android {
             //shrinkResources true
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 

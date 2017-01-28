@@ -1,4 +1,4 @@
-package jp.co.crowdworks.realm_java_helpers_bolts;
+package io.github.yusukeiwaki.realm_java_helpers_bolts;
 
 import java.util.List;
 

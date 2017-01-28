@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <groupId>jp.co.crowdworks</groupId>
+  <groupId>io.github.yusukeiwaki</groupId>
   <artifactId>realm-java-helpers</artifactId>
   <versioning>
     <release>0.0.10</release>
