@@ -6,18 +6,13 @@ Some utility classes for [realm-java](https://realm.io/jp/docs/java/latest/)
 
 ```
 repositories {
-    maven {
-        url 'https://github.com/YusukeIwaki/realm-java-helpers/raw/master/repo'
-    }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    compile 'jp.co.crowdworks:realm-java-helpers-bolts:0.1.2'
+    compile 'com.github.yusukeiwaki:realm-java-helpers:1.0.0'
 }
 ```
-
-realm-java-helpers (with Rx dependency) is deprecated. Use `realm-java-helpers-bolts` instead.
-
 
 ## Usage
 
