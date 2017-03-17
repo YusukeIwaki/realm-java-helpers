@@ -1,0 +1,37 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath "io.realm:realm-gradle-plugin:2.3.2"
+    }
+}
+
+apply plugin: 'maven'
+apply plugin: 'realm-android'
+
+android {
+  compileSdkVersion 25
+  buildToolsVersion "25.0.2"
+  defaultConfig {
+    applicationId "io.github.yusukeiwaki.realm_java_helpers_sample"
+    minSdkVersion 15
+    targetSdkVersion 25
+    versionCode 1
+    versionName "1.0"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  compile 'com.android.support:appcompat-v7:25.3.0'
+  compile project(':realm-java-helpers-bolts')
+}
