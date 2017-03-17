@@ -23,6 +23,6 @@ android {
 }
 
 dependencies {
-    provided 'io.realm:realm-android-library:2.3.2'
+    provided 'io.realm:realm-android-library:3.0.0'
     compile 'com.parse.bolts:bolts-tasks:1.4.0'
 }
