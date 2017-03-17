@@ -2,6 +2,8 @@
 
 Some utility classes for [realm-java](https://realm.io/jp/docs/java/latest/)
 
+This library is compatible with Realm 2.0. (Not tested yet with Realm 3.0... sorry)
+
 ## Setup
 
 ```
@@ -10,9 +12,11 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.yusukeiwaki:realm-java-helpers:1.0.0'
+    compile 'com.github.yusukeiwaki:realm-java-helpers:1.1.0'
 }
 ```
+
+Also it is required to setup the Realm properly like [this](https://realm.io/docs/java/latest/#installation), because this library doesn't include Realm.
 
 ## Usage
 
