@@ -1,17 +1,5 @@
 apply plugin: 'com.android.library'
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath "io.realm:realm-gradle-plugin:2.2.1"
-    }
-}
-
-apply plugin: 'maven'
-apply plugin: 'realm-android'
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -35,5 +23,6 @@ android {
 }
 
 dependencies {
+    provided 'io.realm:realm-android-library:2.3.2'
     compile 'com.parse.bolts:bolts-tasks:1.4.0'
 }
