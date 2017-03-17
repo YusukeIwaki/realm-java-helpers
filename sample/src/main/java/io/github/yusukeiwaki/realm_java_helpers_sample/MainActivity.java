@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import bolts.Continuation;
+import bolts.Task;
 import io.github.yusukeiwaki.realm_java_helpers_bolts.RealmHelper;
 import io.github.yusukeiwaki.realm_java_helpers_sample.model.User;
 import io.realm.Realm;
@@ -26,15 +28,20 @@ public class MainActivity extends AppCompatActivity {
                 realm.createOrUpdateAllFromJson(User.class, users);
                 return null;
             }
-        });
-
-        User u = RealmHelper.executeTransactionForRead(new RealmHelper.Transaction<User>() {
+        }).onSuccess(new Continuation<Void, Object>() {
             @Override
-            public User execute(Realm realm) throws Exception {
-                return realm.where(User.class).equalTo("id", 2).findFirst();
+            public Object then(Task<Void> task) throws Exception {
+                User u = RealmHelper.executeTransactionForRead(new RealmHelper.Transaction<User>() {
+                    @Override
+                    public User execute(Realm realm) throws Exception {
+                        return realm.where(User.class).equalTo("id", 2).findFirst();
+                    }
+                });
+
+                if (!u.name.equals("Hanako")) throw new RuntimeException();
+
+                return null;
             }
         });
-
-        if (!u.getName().equals("Hanako")) throw new RuntimeException();
     }
 }

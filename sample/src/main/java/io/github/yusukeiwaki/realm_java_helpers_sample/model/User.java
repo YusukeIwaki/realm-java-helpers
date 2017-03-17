@@ -5,14 +5,6 @@ import io.realm.annotations.PrimaryKey;
 
 public class User extends RealmObject {
     @PrimaryKey
-    private long id;
-    private String name;
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
+    public long id;
+    public String name;
 }
