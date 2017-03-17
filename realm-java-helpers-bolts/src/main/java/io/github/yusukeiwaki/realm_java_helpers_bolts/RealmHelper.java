@@ -19,73 +19,41 @@ public class RealmHelper {
         return Realm.getDefaultInstance();
     }
 
-    private interface RealmHandling<T> {
-        T execute(Realm realm) throws Exception;
-        T onError(Exception exception);
-    }
-    private static <T> T withRealm(RealmHandling<T> process) {
-        Realm realm = null;
-        T ret;
-        try {
-            realm = get();
-            ret = process.execute(realm);
-        } catch (Exception e) {
-            Log.w(TAG, e.getMessage(), e);
-            ret = process.onError(e);
-        } finally {
-            if (realm != null) realm.close();
-        }
-        return ret;
-    }
-
-    public static <E extends RealmObject> List<E> copyFromRealm(final Iterable<E> objects) {
+    public static <E extends RealmObject> List<E> copyFromRealm(Iterable<E> objects) {
         if (objects==null) return Collections.emptyList();
 
-        return withRealm(new RealmHandling<List<E>>() {
-            @Override
-            public List<E> execute(Realm realm) throws Exception {
-                return realm.copyFromRealm(objects);
-            }
-
-            @Override
-            public List<E> onError(Exception e) {
-                return Collections.emptyList();
-            }
-        });
+        try (Realm realm = get()) {
+            return realm.copyFromRealm(objects);
+        }
+        catch (Exception e) {
+            Log.w(TAG, e.getMessage(), e);
+            return Collections.emptyList();
+        }
     }
 
-    public static <E extends RealmObject> E copyFromRealm(final E object) {
+    public static <E extends RealmObject> E copyFromRealm(E object) {
         if (object==null) return null;
 
-        return withRealm(new RealmHandling<E>() {
-            @Override
-            public E execute(Realm realm) throws Exception {
-                return realm.copyFromRealm(object);
-            }
-
-            @Override
-            public E onError(Exception e) {
-                return null;
-            }
-        });
+        try (Realm realm = get()) {
+            return realm.copyFromRealm(object);
+        }
+        catch (Exception e) {
+            Log.w(TAG, e.getMessage(), e);
+            return null;
+        }
     }
 
     public interface Transaction<T> {
-        T execute(io.realm.Realm realm) throws Exception;
+        T execute(Realm realm) throws Exception;
     }
 
-    public static <T extends RealmObject> T executeTransactionForRead(final Transaction<T> transaction) {
-        return withRealm(new RealmHandling<T>() {
-            @Override
-            public T execute(Realm realm) throws Exception {
-                return RealmHelper.copyFromRealm(transaction.execute(realm));
-            }
-
-            @Override
-            public T onError(Exception e) {
-                return null;
-            }
-        });
+    public static <T extends RealmObject> T executeTransactionForRead(Transaction<T> transaction) {
+        try (Realm realm = get()) {
+            return RealmHelper.copyFromRealm(transaction.execute(realm));
+        } catch (Throwable throwable) {
+            Log.w(TAG, throwable.getMessage(), throwable);
+            return null;
+        }
     }
 
     private static boolean shouldUseSync() {
@@ -108,8 +76,7 @@ public class RealmHelper {
     private static Task<Void> executeTransactionSync(final RealmHelper.Transaction transaction) {
         final TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
-        Realm realm = get();
-        try {
+        try (Realm realm = get()) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -123,8 +90,6 @@ public class RealmHelper {
             task.setResult(null);
         } catch (Exception exception) {
             task.setError(exception);
-        } finally {
-            realm.close();
         }
 
         return task.getTask();
