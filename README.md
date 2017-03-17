@@ -23,7 +23,7 @@ dependencies {
 //  User u = Realm.getDefaultInstance().where(User.class).equals("id", id).findFirst();
 //  setTitle(u.getName());
 
-RealmHelper.executeTransactionForRead(new RealmHelper.Transaction<User>() {
+User u = RealmHelper.executeTransactionForRead(new RealmHelper.Transaction<User>() {
     @Override
     public void execute(Realm realm) {
         return realm.where(User.class).equals("id", id).findFirst();
