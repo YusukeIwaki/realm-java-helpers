@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.yusukeiwaki:realm-java-helpers:1.1.1'
+    compile 'com.github.yusukeiwaki:realm-java-helpers:1.2.0'
 }
 ```
 
@@ -67,3 +67,41 @@ observer.sub();
 
 //realm is automatically closed when 'observer.unsub()' is called.
 ```
+
+## RealmRecyclerViewAdapter
+
+Define your own RecyclerView adapter as below:
+
+```
+class IssueListAdapter extends RealmRecyclerViewAdapter<Issue, IssueViewHolder> {
+    public IssueListAdapter(RealmHelper.Query<Issue> query) {
+        super(query);
+    }
+
+    @Override
+    public IssueViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ...        
+    }
+
+    @Override
+    public void onBindViewHolder(IssueViewHolder holder, int position) {
+        ...
+    }
+
+```
+
+
+and just set it to the the RecyclerView.
+
+```
+recyclerView.setAdapter(new IssueListAdapter(new RealmHelper.Query<Issue>() {
+    @Override
+    public RealmResults<Issue> query(Realm realm) {
+        return realm.where(Issue.class).equalTo("assignee", "me").findAllSorted("updated_at", Sort.DESCENDING);
+    }
+}));
+```
+
+then, the result is auto-updated only while the RecyclerView is active!
+
+**Realm instance is automatically allocated and released internally** with this adapter class!
