@@ -23,6 +23,7 @@ android {
 }
 
 dependencies {
-    provided 'io.realm:realm-android-library:3.0.0'
+    provided 'io.realm:realm-android-library:3.1.2'
+    provided 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.parse.bolts:bolts-tasks:1.4.0'
 }

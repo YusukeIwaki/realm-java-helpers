@@ -10,6 +10,7 @@ import bolts.Task;
 import bolts.TaskCompletionSource;
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 
 public class RealmHelper {
 
@@ -126,5 +127,9 @@ public class RealmHelper {
         });
 
         return task.getTask();
+    }
+
+    public interface Query<T extends RealmObject> {
+        RealmResults<T> query(Realm realm);
     }
 }

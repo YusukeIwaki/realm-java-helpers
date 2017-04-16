@@ -9,11 +9,11 @@ import io.realm.RealmResults;
 public abstract class RealmListObserver<T extends RealmObject> extends AbstractRealmResultsObserver<T> {
     private static final String TAG = RealmListObserver.class.getSimpleName();
 
-    private String previousResultsString;
-
     @Override
     protected RealmChangeListener<RealmResults<T>> getListener() {
         return new RealmChangeListener<RealmResults<T>>() {
+            private String previousResultsString;
+
             @Override
             public void onChange(RealmResults<T> results) {
                 String currentResultString = results != null ? results.toString() : "";

@@ -9,8 +9,6 @@ import io.realm.RealmResults;
 public abstract class RealmObjectObserver<T extends RealmObject> extends AbstractRealmResultsObserver<T> {
     private static final String TAG = RealmObjectObserver.class.getSimpleName();
 
-    private String previousResultString;
-
     @Override
     protected final RealmResults<T> queryItems(Realm realm) {
         return query(realm).findAll();
@@ -19,6 +17,8 @@ public abstract class RealmObjectObserver<T extends RealmObject> extends Abstrac
     @Override
     protected final RealmChangeListener<RealmResults<T>> getListener() {
         return new RealmChangeListener<RealmResults<T>>() {
+            private String previousResultString;
+
             @Override
             public void onChange(RealmResults<T> results) {
                 T currentResult = extractObjectFromResults(results);
