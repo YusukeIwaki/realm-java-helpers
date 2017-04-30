@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.yusukeiwaki:realm-java-helpers:1.2.0'
+    compile 'com.github.yusukeiwaki:realm-java-helpers:1.2.1'
 }
 ```
 
