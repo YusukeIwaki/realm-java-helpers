@@ -16,7 +16,7 @@ public abstract class RealmListObserver<T extends RealmObject> extends AbstractR
 
             @Override
             public void onChange(RealmResults<T> results) {
-                String currentResultString = results != null ? results.toString() : "";
+                String currentResultString = results != null ? getComparationStringFor(results) : "";
                 if (previousResultsString != null && previousResultsString.equals(currentResultString)) {
                     return;
                 }
@@ -27,4 +27,8 @@ public abstract class RealmListObserver<T extends RealmObject> extends AbstractR
     }
 
     protected abstract void onCollectionChanged(List<T> models);
+
+    protected String getComparationStringFor(RealmResults<T> results) {
+        return results.toString();
+    }
 }

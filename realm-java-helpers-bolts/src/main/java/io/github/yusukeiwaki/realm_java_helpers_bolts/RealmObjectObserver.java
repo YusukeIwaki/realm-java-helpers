@@ -22,7 +22,7 @@ public abstract class RealmObjectObserver<T extends RealmObject> extends Abstrac
             @Override
             public void onChange(RealmResults<T> results) {
                 T currentResult = extractObjectFromResults(results);
-                String currentResultString = currentResult != null ? currentResult.toString() : "";
+                String currentResultString = currentResult != null ? getComparationStringFor(currentResult) : "";
                 if (previousResultString != null && previousResultString.equals(currentResultString)) {
                     return;
                 }
@@ -37,5 +37,9 @@ public abstract class RealmObjectObserver<T extends RealmObject> extends Abstrac
 
     protected T extractObjectFromResults(RealmResults<T> results) {
         return results.last(null);
+    }
+
+    protected String getComparationStringFor(T object) {
+        return object.toString();
     }
 }
