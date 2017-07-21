@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+}
+
+dependencies {
+    provided rootProject.ext.androidSupportAnnotationLibrary
+    provided rootProject.ext.realmAndroidLibrary
+    provided "com.android.support:recyclerview-v7:$rootProject.ext.supportLibraryVersion"
+}

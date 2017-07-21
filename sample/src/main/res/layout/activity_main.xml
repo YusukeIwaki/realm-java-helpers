@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="io.github.yusukeiwaki.androidhelper.MainActivity"
-    >
+    android:orientation="vertical">
+
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="0px"
+      android:layout_weight="1"/>
 
   <TextView
-      android:id="@+id/text"
-      android:layout_width="wrap_content"
+      android:id="@+id/txt_last_user"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Hello World!"
+      android:minHeight="32dp"
+      android:text="-"
+      android:gravity="center"
       />
-</RelativeLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/btn_bolts"
+        android:layout_width="0px"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="bolts"
+        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+
+    <Button
+        android:id="@+id/btn_delete_last"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="delete last user"/>
+
+    <Button
+        android:id="@+id/btn_rxjava2"
+        android:layout_width="0px"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="rxjava2"
+        style="@style/Base.Widget.AppCompat.Button.Colored"/>
+
+  </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,11 @@
+ext {
+  minSdkVersion = 15
+  targetSdkVersion = 25
+  compileSdkVersion = 25
+  buildToolsVersion = "25.0.3"
+
+  realmAndroidLibrary = "io.realm:realm-android-library:3.5.0"
+
+  supportLibraryVersion = "25.3.1"
+  androidSupportAnnotationLibrary = "com.android.support:support-annotations:$supportLibraryVersion"
+}

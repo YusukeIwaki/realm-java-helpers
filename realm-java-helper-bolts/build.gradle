@@ -1,0 +1,18 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+}
+
+dependencies {
+    compile project(':realm-java-helper-core')
+    provided rootProject.ext.androidSupportAnnotationLibrary
+    provided rootProject.ext.realmAndroidLibrary
+    provided 'com.parse.bolts:bolts-tasks:1.4.0'
+}
