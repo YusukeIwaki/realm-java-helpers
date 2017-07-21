@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -15,3 +16,5 @@ dependencies {
     provided rootProject.ext.realmAndroidLibrary
     provided "com.android.support:recyclerview-v7:$rootProject.ext.supportLibraryVersion"
 }
+
+apply from: rootProject.file('bintray_publish.gradle')

@@ -5,26 +5,22 @@ Some utility classes for [realm-java](https://realm.io/jp/docs/java/latest/)
 ## Setup
 
 ```
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 dependencies {
     // for RealmHelper
-    compile 'com.github.YusukeIwaki.realm-java-helpers:realm-java-helper-bolts:2.0.0'
+    compile 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-bolts:2.0.0'
     compile 'com.parse.bolts:bolts-tasks:1.4.0' // You must include the latest version of bolts-tasks.
 
     // for RxRealmHelper
-    compile 'com.github.YusukeIwaki.realm-java-helpers:realm-java-helper-rxjava2:2.0.0'
+    compile 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-rxjava2:2.0.0'
     compile 'io.reactivex.rxjava2:rxjava:2.1.1' // You must include any version of rxjava2
 
 
     // for RealmObjectObserver, RealmListObserver
-    compile 'com.github.YusukeIwaki.realm-java-helpers:realm-java-observers:2.0.0'
+    compile 'io.github.YusukeIwaki.realm-java-helpers:realm-java-observers:2.0.0'
 
 
     // for RealmRecyclerViewAdapter
-    compile 'com.github.YusukeIwaki.realm-java-helpers:realm-java-adapters:2.0.0'
+    compile 'io.github.YusukeIwaki.realm-java-helpers:realm-java-adapters:2.0.0'
     compile 'com.android.support:recyclerview-v7:25.3.1' // You must include any version of recyclerview-v7.
 }
 ```
@@ -118,7 +114,7 @@ class SomeActivity extends Activity implements RealmObjectObserver.OnUpdateListe
     }
 
     @Override
-    public void onUpdateRealmObject(@Nullable User user) {
+    public void onUpdateRealmObject(@Nullable XX user) {
         // enjoy something reactive here :)
     }
 }
