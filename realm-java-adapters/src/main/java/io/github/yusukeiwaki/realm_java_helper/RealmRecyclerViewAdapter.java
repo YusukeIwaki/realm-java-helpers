@@ -6,12 +6,12 @@ import android.support.v7.widget.RecyclerView;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 import io.realm.RealmResults;
 
-public abstract class RealmRecyclerViewAdapter<T extends RealmObject, S extends RecyclerView.ViewHolder>
+public abstract class RealmRecyclerViewAdapter<T extends RealmModel, S extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<S> {
-    public interface Query<T extends RealmObject> {
+    public interface Query<T extends RealmModel> {
         RealmResults<T> query(Realm realm);
     }
 

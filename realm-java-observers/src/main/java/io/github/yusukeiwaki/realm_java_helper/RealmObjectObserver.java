@@ -4,16 +4,16 @@ import android.support.annotation.Nullable;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
-public class RealmObjectObserver<T extends RealmObject> extends AbstractRealmResultsObserver<T> {
-    public interface Query<T extends RealmObject> {
+public class RealmObjectObserver<T extends RealmModel> extends AbstractRealmResultsObserver<T> {
+    public interface Query<T extends RealmModel> {
         RealmQuery<T> query(Realm realm);
     }
 
-    public interface OnUpdateListener<T extends RealmObject> {
+    public interface OnUpdateListener<T extends RealmModel> {
         void onUpdateRealmObject(@Nullable T object);
     }
 

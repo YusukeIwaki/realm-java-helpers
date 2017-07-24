@@ -2,12 +2,12 @@ package io.github.yusukeiwaki.realm_java_helper;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 import io.realm.RealmResults;
 
 /**
  */
-abstract class AbstractRealmResultsObserver<T extends RealmObject> {
+abstract class AbstractRealmResultsObserver<T extends RealmModel> {
     protected Realm realm;
     private RealmChangeListener<RealmResults<T>> listener;
     private RealmResults<T> results;

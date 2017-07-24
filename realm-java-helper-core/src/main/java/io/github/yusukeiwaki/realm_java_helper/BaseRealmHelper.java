@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmObject;
+import io.realm.RealmModel;
 
 /*package*/ abstract class BaseRealmHelper {
     private static final String TAG = BaseRealmHelper.class.getSimpleName();
@@ -16,7 +16,7 @@ import io.realm.RealmObject;
         return Realm.getDefaultInstance();
     }
 
-    public final <E extends RealmObject> List<E> copyFromRealm(Iterable<E> objects) {
+    public final <E extends RealmModel> List<E> copyFromRealm(Iterable<E> objects) {
         if (objects==null) return Collections.emptyList();
 
         Realm realm = getRealm();
@@ -30,7 +30,7 @@ import io.realm.RealmObject;
         }
     }
 
-    public final <E extends RealmObject> E copyFromRealm(E object) {
+    public final <E extends RealmModel> E copyFromRealm(E object) {
         if (object==null) return null;
 
         Realm realm = getRealm();
@@ -48,7 +48,7 @@ import io.realm.RealmObject;
         T execute(Realm realm) throws Exception;
     }
 
-    public final <T extends RealmObject> T executeTransactionForRead(TransactionForRead<T> transaction) {
+    public final <T extends RealmModel> T executeTransactionForRead(TransactionForRead<T> transaction) {
         Realm realm = getRealm();
         try {
             return copyFromRealm(transaction.execute(realm));
