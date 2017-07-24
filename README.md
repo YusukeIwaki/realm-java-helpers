@@ -114,7 +114,7 @@ class SomeActivity extends Activity implements RealmObjectObserver.OnUpdateListe
     }
 
     @Override
-    public void onUpdateRealmObject(@Nullable XX user) {
+    public void onUpdateRealmObject(@Nullable XX object) {
         // enjoy something reactive here :)
     }
 }
