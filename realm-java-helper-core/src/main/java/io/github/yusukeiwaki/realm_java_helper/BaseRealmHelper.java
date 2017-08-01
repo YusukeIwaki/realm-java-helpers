@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.Collections;
 import java.util.List;
 
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmModel;
 
@@ -49,6 +50,18 @@ import io.realm.RealmModel;
     }
 
     public final <T extends RealmModel> T executeTransactionForRead(TransactionForRead<T> transaction) {
+        Realm realm = getRealm();
+        try {
+            return copyFromRealm(transaction.execute(realm));
+        } catch (Exception exception) {
+            Log.w(TAG, exception.getMessage(), exception);
+            return null;
+        } finally {
+            realm.close();
+        }
+    }
+
+    public final <T extends RealmModel> List<T> executeTransactionForReadList(TransactionForRead<OrderedRealmCollection<T>> transaction) {
         Realm realm = getRealm();
         try {
             return copyFromRealm(transaction.execute(realm));

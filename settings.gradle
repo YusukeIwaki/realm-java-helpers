@@ -1,1 +1,1 @@
-include ':realm-java-helper-core', ':realm-java-helper-bolts', ':realm-java-helper-rxjava2', ':realm-java-observers', ':realm-java-adapters', ':sample'
+include ':realm-java-helper-core', ':realm-java-helper-bolts', ':realm-java-helper-rxjava2', ':realm-java-observers-base', ':realm-java-observers', ':realm-java-abstract-observers', ':realm-java-adapters', ':sample'

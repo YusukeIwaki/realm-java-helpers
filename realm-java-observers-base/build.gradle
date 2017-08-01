@@ -12,9 +12,12 @@ android {
 }
 
 dependencies {
-    compile project(':realm-java-observers-base')
     provided rootProject.ext.androidSupportAnnotationLibrary
     provided rootProject.ext.realmAndroidLibrary
+}
+
+tasks.withType(Javadoc).all {
+    options.memberLevel = JavadocMemberLevel.PACKAGE
 }
 
 apply from: rootProject.file('bintray_publish.gradle')
