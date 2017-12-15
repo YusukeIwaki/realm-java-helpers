@@ -7,21 +7,26 @@ Some utility classes for [realm-java](https://realm.io/jp/docs/java/latest/)
 ```
 dependencies {
     // for RealmHelper
-    compile 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-bolts:2.0.0'
-    compile 'com.parse.bolts:bolts-tasks:1.4.0' // You must include the latest version of bolts-tasks.
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-bolts:2.2.0'
+    implementation 'com.parse.bolts:bolts-tasks:1.4.0' // You must include the latest version of bolts-tasks.
 
     // for RxRealmHelper
-    compile 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-rxjava2:2.0.0'
-    compile 'io.reactivex.rxjava2:rxjava:2.1.1' // You must include any version of rxjava2
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-rxjava2:2.2.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.7' // You must include any version of rxjava2
 
 
     // for RealmObjectObserver, RealmListObserver
-    compile 'io.github.YusukeIwaki.realm-java-helpers:realm-java-observers:2.0.0'
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-observers:2.2.0'
 
 
     // for RealmRecyclerViewAdapter
-    compile 'io.github.YusukeIwaki.realm-java-helpers:realm-java-adapters:2.0.0'
-    compile 'com.android.support:recyclerview-v7:25.3.1' // You must include any version of recyclerview-v7.
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-adapters:2.2.0'
+    implementation 'com.android.support:recyclerview-v7:27.0.2' // You must include any version of recyclerview-v7.
+
+    // for RealmObjectLiveData, RealmListLiveData
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-live-data:2.2.0'
+    implementation "android.arch.lifecycle:runtime:1.0.3"
+    implementation "android.arch.lifecycle:extensions:1.0.0"
 }
 ```
 
@@ -61,10 +66,10 @@ RealmHelper.getInstance().executeTransaction(realm -> {
 Similar to `Realm#copyFromRealm`, the difference is that `RealmHelper#copyFromRealm()` automatically closes the realm after copying.
 
 
-## realm-java-helper-observers
+## realm-java-observers
 
 ```
-Query<User> query = new Query<User>() {
+RealmObserverQuery<User> query = new RealmObserverQuery<User>() {
     @Override
     public RealmQuery<User> query(Realm realm) {
         return realm.where(User.class).equalTo("id", 3);
@@ -120,6 +125,46 @@ class SomeActivity extends Activity implements RealmObjectObserver.OnUpdateListe
 }
 ```
 
+## realm-java-live-data
+
+`RealmListLiveData` and `RealmObjectLiveData` is also available.
+
+[LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html) is lifecycle-aware.
+We can write some reactive logics intuitively with it.
+
+```
+class NewestUserLiveData extends RealmObjectLiveData<User> {
+    @Override
+    protected RealmQuery<User> query(Realm realm) {
+        return realm.where(User.class).sort("updated_at", Sort.DESCENDING);
+    }
+
+    @Override
+    protected User extractObjectFromResults(RealmResults<User> results) {
+        return results.first(null);
+    }    
+}
+
+class SomeActivity extends AppCompatActivity {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        new NewestUserLiveData().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(@Nullable User user) {
+                // enjoy something reactive here :)
+            }
+        });
+    }
+
+    // We don't need to add any codes into onResume or onPause, 
+    // because LiveData automaticaly works well by observing the state of this Activity.
+}
+```
+
+
+
 
 ## RealmRecyclerViewAdapter
 
@@ -150,7 +195,7 @@ and just set it to the the RecyclerView.
 recyclerView.setAdapter(new IssueListAdapter(new RealmRecyclerViewAdapter.Query<Issue>() {
     @Override
     public RealmResults<Issue> query(Realm realm) {
-        return realm.where(Issue.class).equalTo("assignee", "me").findAllSorted("updated_at", Sort.DESCENDING);
+        return realm.where(Issue.class).equalTo("assignee", "me").sort("updated_at", Sort.DESCENDING).findAll();
     }
 }));
 ```
