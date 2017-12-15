@@ -15,8 +15,14 @@ public abstract class RealmListLiveData<T extends RealmObject> extends LiveData<
 
   public RealmListLiveData() {
     this.observer = new AbstractRealmResultsObserver<T>() {
-      @Override protected RealmResults<T> queryItems(Realm realm) {
-        return execQuery(query(realm));
+      @Override
+      protected RealmQuery<T> query(Realm realm) {
+        return RealmListLiveData.this.query(realm);
+      }
+
+      @Override
+      protected RealmResults<T> execQuery(RealmQuery<T> realmQuery) {
+        return RealmListLiveData.this.execQuery(realmQuery);
       }
 
       @Override protected RealmChangeListener<RealmResults<T>> getListener() {

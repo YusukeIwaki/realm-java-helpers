@@ -37,6 +37,10 @@ dependencies {
 
   compile project(':realm-java-observers')
 
+  compile project(':realm-java-live-data')
+  compile "android.arch.lifecycle:runtime:1.0.3"
+  compile "android.arch.lifecycle:extensions:1.0.0"
+
   compile project(':realm-java-adapters')
   compile 'com.android.support:recyclerview-v7:27.0.2'
 

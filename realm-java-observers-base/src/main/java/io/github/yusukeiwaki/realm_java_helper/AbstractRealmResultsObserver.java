@@ -6,6 +6,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmModel;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 /**
@@ -15,7 +16,7 @@ abstract class AbstractRealmResultsObserver<T extends RealmModel> {
     private RealmChangeListener<RealmResults<T>> listener;
     private RealmResults<T> results;
 
-    protected abstract RealmResults<T> queryItems(Realm realm);
+    protected abstract RealmQuery<T> query(Realm realm);
 
     protected abstract RealmChangeListener<RealmResults<T>> getListener();
 
@@ -24,7 +25,7 @@ abstract class AbstractRealmResultsObserver<T extends RealmModel> {
 
         realm = Realm.getDefaultInstance();
         listener = getListener();
-        results = queryItems(realm);
+        results = execQuery(query(realm));
 
         listener.onChange(results);
         results.addChangeListener(listener);
@@ -41,6 +42,10 @@ abstract class AbstractRealmResultsObserver<T extends RealmModel> {
             realm.close();
             realm = null;
         }
+    }
+
+    protected RealmResults<T> execQuery(RealmQuery<T> query) {
+        return query.findAll();
     }
 
     T copyFromRealm(T object) {

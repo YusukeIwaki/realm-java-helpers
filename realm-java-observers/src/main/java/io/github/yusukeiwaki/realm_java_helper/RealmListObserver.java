@@ -7,6 +7,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmModel;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class RealmListObserver<T extends RealmModel> extends AbstractRealmResultsObserver<T> {
@@ -18,11 +19,11 @@ public class RealmListObserver<T extends RealmModel> extends AbstractRealmResult
         void onUpdateRealmList(@NonNull List<T> results);
     }
 
-    private final Query<T> query;
+    private final RealmObserverQuery<T> query;
 
     private OnUpdateListener<T> onUpdateListener;
 
-    public RealmListObserver(Query<T> query) {
+    public RealmListObserver(RealmObserverQuery<T> query) {
         this.query = query;
     }
 
@@ -31,7 +32,7 @@ public class RealmListObserver<T extends RealmModel> extends AbstractRealmResult
     }
 
     @Override
-    protected final RealmResults<T> queryItems(Realm realm) {
+    protected RealmQuery<T> query(Realm realm) {
         return query.query(realm);
     }
 

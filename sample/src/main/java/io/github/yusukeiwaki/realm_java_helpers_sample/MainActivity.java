@@ -1,5 +1,6 @@
 package io.github.yusukeiwaki.realm_java_helpers_sample;
 
+import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -39,9 +40,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setupFirstUserText();
         setupLastUserText();
         setupRecyclerView();
         setupButtons();
+    }
+
+    private void setupFirstUserText() {
+        new FirstUserLiveData().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(@Nullable User user) {
+                TextView textView = findViewById(R.id.txt_first_user);
+                if (user == null) {
+                    textView.setText("~(o_x)~");
+                } else {
+                    textView.setText("firstUser.name = " + user.name);
+                }
+            }
+        });
     }
 
     private void setupLastUserText() {
@@ -49,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         lastUserObserver.setOnUpdateListener(new RealmObjectObserver.OnUpdateListener<User>() {
             @Override
             public void onUpdateRealmObject(@Nullable User user) {
-                TextView textView = (TextView) findViewById(R.id.txt_last_user);
+                TextView textView = findViewById(R.id.txt_last_user);
                 if (user == null) {
                     textView.setText("~(x_x)~");
                 } else {
@@ -63,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         RealmRecyclerViewAdapter.Query<User> query = new RealmRecyclerViewAdapter.Query<User>() {
             @Override
             public RealmResults<User> query(Realm realm) {
-                return realm.where(User.class).findAllSorted("name");
+                return realm.where(User.class).sort("name").findAll();
             }
         };
 
@@ -80,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -124,13 +140,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.btn_delete_first).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RealmHelper.getInstance().executeTransaction(new RealmHelper.Transaction() {
+                    @Override
+                    public void execute(Realm realm) throws Exception {
+                        realm.where(User.class).sort("name").findAll().deleteFirstFromRealm();
+                    }
+                });
+            }
+        });
+
         findViewById(R.id.btn_delete_last).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RealmHelper.getInstance().executeTransaction(new RealmHelper.Transaction() {
                     @Override
                     public void execute(Realm realm) throws Exception {
-                        realm.where(User.class).findAllSorted("name").deleteLastFromRealm();
+                        realm.where(User.class).sort("name").findAll().deleteLastFromRealm();
                     }
                 });
             }

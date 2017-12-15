@@ -13,8 +13,14 @@ public abstract class RealmObjectLiveData<T extends RealmObject> extends LiveDat
 
   public RealmObjectLiveData() {
     this.observer = new AbstractRealmResultsObserver<T>() {
-      @Override protected RealmResults<T> queryItems(Realm realm) {
-        return execQuery(query(realm));
+      @Override
+      protected RealmQuery<T> query(Realm realm) {
+        return RealmObjectLiveData.this.query(realm);
+      }
+
+      @Override
+      protected RealmResults<T> execQuery(RealmQuery<T> realmQuery) {
+        return RealmObjectLiveData.this.execQuery(realmQuery);
       }
 
       @Override protected RealmChangeListener<RealmResults<T>> getListener() {

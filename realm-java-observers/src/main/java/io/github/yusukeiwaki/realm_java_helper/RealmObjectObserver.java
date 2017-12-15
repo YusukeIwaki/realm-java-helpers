@@ -9,18 +9,14 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class RealmObjectObserver<T extends RealmModel> extends AbstractRealmResultsObserver<T> {
-    public interface Query<T extends RealmModel> {
-        RealmQuery<T> query(Realm realm);
-    }
-
     public interface OnUpdateListener<T extends RealmModel> {
         void onUpdateRealmObject(@Nullable T object);
     }
 
-    private final Query<T> query;
+    private final RealmObserverQuery<T> query;
     private OnUpdateListener<T> onUpdateListener;
 
-    public RealmObjectObserver(Query<T> query) {
+    public RealmObjectObserver(RealmObserverQuery<T> query) {
         this.query = query;
     }
 
@@ -29,8 +25,8 @@ public class RealmObjectObserver<T extends RealmModel> extends AbstractRealmResu
     }
 
     @Override
-    protected final RealmResults<T> queryItems(Realm realm) {
-        return execQuery(query.query(realm));
+    protected RealmQuery<T> query(Realm realm) {
+        return query.query(realm);
     }
 
     @Override
