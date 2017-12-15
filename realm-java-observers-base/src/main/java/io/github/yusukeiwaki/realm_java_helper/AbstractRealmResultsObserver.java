@@ -1,5 +1,8 @@
 package io.github.yusukeiwaki.realm_java_helper;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmModel;
@@ -38,5 +41,15 @@ abstract class AbstractRealmResultsObserver<T extends RealmModel> {
             realm.close();
             realm = null;
         }
+    }
+
+    T copyFromRealm(T object) {
+        if (object == null) return null;
+        return realm.copyFromRealm(object);
+    }
+
+    List<T> copyFromRealm(RealmResults<T> results) {
+        if (results == null) return Collections.emptyList();
+        return realm.copyFromRealm(results);
     }
 }

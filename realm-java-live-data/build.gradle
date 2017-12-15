@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+}
+
+dependencies {
+    compile project(':realm-java-observers-base')
+    provided rootProject.ext.androidSupportAnnotationLibrary
+    provided rootProject.ext.realmAndroidLibrary
+    provided "android.arch.lifecycle:extensions:1.0.0"
+}
+
+apply from: rootProject.file('bintray_publish.gradle')
