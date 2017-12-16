@@ -35,18 +35,18 @@ android {
 dependencies {
   compile 'com.android.support:appcompat-v7:27.0.2'
 
-  compile project(':realm-java-observers')
+  compile 'io.github.yusukeiwaki.realm-java-helpers:realm-java-observers:2.2.0'
 
-  compile project(':realm-java-live-data')
+  compile 'io.github.yusukeiwaki.realm-java-helpers:realm-java-live-data:2.2.0'
   compile "android.arch.lifecycle:runtime:1.0.3"
   compile "android.arch.lifecycle:extensions:1.0.0"
 
-  compile project(':realm-java-adapters')
+  compile 'io.github.yusukeiwaki.realm-java-helpers:realm-java-adapters:2.2.0'
   compile 'com.android.support:recyclerview-v7:27.0.2'
 
-  compile project(':realm-java-helper-bolts')
+  compile 'io.github.yusukeiwaki.realm-java-helpers:realm-java-helper-bolts:2.2.0'
   compile 'com.parse.bolts:bolts-tasks:1.4.0'
 
-  compile project(':realm-java-helper-rxjava2')
+  compile 'io.github.yusukeiwaki.realm-java-helpers:realm-java-helper-rxjava2:2.2.0'
   compile 'io.reactivex.rxjava2:rxjava:2.1.7'
 }
