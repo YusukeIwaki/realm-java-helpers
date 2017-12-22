@@ -20,11 +20,7 @@ public class RxRealmHelper extends BaseRealmHelper {
     public static final Object SUCCESS = new Object();
 
     public final Single executeTransaction(final Transaction transaction) {
-        Realm realm = getRealm();
-        boolean isInTransaction = realm.isInTransaction();
-        realm.close();
-
-        if (shouldUseSyncTransaction() || isInTransaction) return executeTransactionSync(transaction);
+        if (shouldUseSyncTransaction()) return executeTransactionSync(transaction);
         else return executeTransactionAsync(transaction);
     }
 
@@ -34,20 +30,16 @@ public class RxRealmHelper extends BaseRealmHelper {
             public void subscribe(@NonNull SingleEmitter singleEmitter) throws Exception {
                 Realm realm = getRealm();
                 try {
-                    if (realm.isInTransaction()) {
-                        transaction.execute(realm);
-                    } else {
-                        realm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                try {
-                                    transaction.execute(realm);
-                                } catch (Throwable throwable) {
-                                    throw new RuntimeException(throwable);
-                                }
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            try {
+                                transaction.execute(realm);
+                            } catch (Throwable throwable) {
+                                throw new RuntimeException(throwable);
                             }
-                        });
-                    }
+                        }
+                    });
                     singleEmitter.onSuccess(SUCCESS);
                 } catch (Throwable throwable) {
                     singleEmitter.onError(throwable);

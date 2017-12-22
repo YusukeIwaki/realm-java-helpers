@@ -15,30 +15,25 @@ public class RealmHelper extends BaseRealmHelper {
         void execute(Realm realm) throws Exception;
     }
     public final Task<Void> executeTransaction(final Transaction transaction) {
-        Realm realm = getRealm();
-        boolean isInTransaction = realm.isInTransaction();
-        if (shouldUseSyncTransaction() || isInTransaction) return executeTransactionSync(realm, isInTransaction, transaction);
-        else return executeTransactionAsync(realm, transaction);
+        if (shouldUseSyncTransaction()) return executeTransactionSync(transaction);
+        else return executeTransactionAsync(transaction);
     }
 
-    private Task<Void> executeTransactionSync(Realm realm, boolean isInTransaction, final Transaction transaction) {
+    private Task<Void> executeTransactionSync(final Transaction transaction) {
         final TaskCompletionSource<Void> task = new TaskCompletionSource<>();
 
+        Realm realm = getRealm();
         try {
-            if (isInTransaction) {
-                transaction.execute(realm);
-            } else {
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        try {
-                            transaction.execute(realm);
-                        } catch (Exception exception) {
-                            throw new RuntimeException(exception);
-                        }
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    try {
+                        transaction.execute(realm);
+                    } catch (Exception exception) {
+                        throw new RuntimeException(exception);
                     }
-                });
-            }
+                }
+            });
             task.setResult(null);
         } catch (Exception exception) {
             task.setError(exception);
@@ -47,8 +42,9 @@ public class RealmHelper extends BaseRealmHelper {
         return task.getTask();
     }
 
-    private Task<Void> executeTransactionAsync(final Realm realm, final Transaction transaction) {
+    private Task<Void> executeTransactionAsync(final Transaction transaction) {
         final TaskCompletionSource<Void> task = new TaskCompletionSource<>();
+        final Realm realm = getRealm();
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
