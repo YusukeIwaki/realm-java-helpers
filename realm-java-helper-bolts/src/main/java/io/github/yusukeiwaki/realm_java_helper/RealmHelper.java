@@ -37,6 +37,8 @@ public class RealmHelper extends BaseRealmHelper {
             task.setResult(null);
         } catch (Exception exception) {
             task.setError(exception);
+        } finally {
+            realm.close();
         }
 
         return task.getTask();

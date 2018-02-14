@@ -43,6 +43,8 @@ public class RxRealmHelper extends BaseRealmHelper {
                     singleEmitter.onSuccess(SUCCESS);
                 } catch (Throwable throwable) {
                     singleEmitter.onError(throwable);
+                } finally {
+                    realm.close();
                 }
             }
         });
