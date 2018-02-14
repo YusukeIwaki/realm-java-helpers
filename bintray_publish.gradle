@@ -2,7 +2,7 @@ publish {
     userOrg = "yusukeiwaki"
     groupId = "io.github.yusukeiwaki.realm-java-helpers"
     artifactId = project.getProjectDir().name
-    publishVersion = "2.2.2"
+    publishVersion = "2.2.3"
     desc = "Some useful classes for realm-java."
     website = "https://github.com/YusukeIwaki/realm-java-helpers"
 }

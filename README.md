@@ -7,24 +7,24 @@ Some utility classes for [realm-java](https://realm.io/jp/docs/java/latest/)
 ```
 dependencies {
     // for RealmHelper
-    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-bolts:2.2.0'
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-bolts:2.2.3'
     implementation 'com.parse.bolts:bolts-tasks:1.4.0' // You must include the latest version of bolts-tasks.
 
     // for RxRealmHelper
-    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-rxjava2:2.2.0'
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-helper-rxjava2:2.3'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.7' // You must include any version of rxjava2
 
 
     // for RealmObjectObserver, RealmListObserver
-    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-observers:2.2.0'
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-observers:2.2.3'
 
 
     // for RealmRecyclerViewAdapter
-    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-adapters:2.2.0'
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-adapters:2.2.3'
     implementation 'com.android.support:recyclerview-v7:27.0.2' // You must include any version of recyclerview-v7.
 
     // for RealmObjectLiveData, RealmListLiveData
-    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-live-data:2.2.0'
+    implementation 'io.github.YusukeIwaki.realm-java-helpers:realm-java-live-data:2.2.3'
     implementation "android.arch.lifecycle:runtime:1.0.3"
     implementation "android.arch.lifecycle:extensions:1.0.0"
 }
